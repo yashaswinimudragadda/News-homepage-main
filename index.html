@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+  <title>Frontend Mentor | News homepage</title>
+  <style>
+    /* 1. Global Reset & Typography */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --soft-orange: hsl(35, 77%, 62%);
+      --soft-red: hsl(5, 85%, 63%);
+      --off-white: hsl(36, 100%, 99%);
+      --grayish-blue: hsl(233, 8%, 79%);
+      --dark-grayish-blue: hsl(236, 13%, 42%);
+      --very-dark-blue: hsl(240, 100%, 5%);
+      --fs-body: 15px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: var(--fs-body);
+      background-color: var(--off-white);
+      color: var(--very-dark-blue);
+      padding: clamp(1rem, 5vw, 2rem);
+      overflow-x: hidden;
+    }
+
+    main {
+      max-width: 1110px;
+      margin: 0 auto;
+    }
+
+    /* 2. Navigation & Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: clamp(2rem, 5vw, 3.5rem);
+    }
+
+    .menu-toggle {
+      display: none; /* Hidden on desktop */
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .menu-close {
+      display: none; /* Hidden on desktop */
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: auto;
+      margin-bottom: 5rem;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: clamp(1rem, 2vw, 2.5rem);
+    }
+
+    nav ul li {
+      color: var(--dark-grayish-blue);
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    nav ul li:hover { color: var(--soft-red); }
+
+    /* Overlay for mobile menu */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    .overlay.active { display: block; }
+
+    /* 3. Hero Section */
+    .hero {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .hero-main {
+      grid-column: span 2;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .img-hero img { width: 100%; display: block; }
+
+    .hero-heading-para {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .hero-heading {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .hero-para p {
+      color: var(--dark-grayish-blue);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-para button {
+      background-color: var(--soft-red);
+      color: var(--off-white);
+      border: none;
+      padding: 1rem 2rem;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .hero-para button:hover { background-color: var(--very-dark-blue); }
+
+    /* 4. Sidebar */
+    .hero-side {
+      background-color: var(--very-dark-blue);
+      color: var(--off-white);
+      padding: 1.5rem;
+    }
+
+    .hero-side h1 { color: var(--soft-orange); font-size: 2.5rem; margin-bottom: 1rem; }
+
+    .side-containers { padding: 1.5rem 0; }
+    .side-containers h5 { font-size: 1.25rem; margin-bottom: 0.5rem; cursor: pointer; transition: 0.3s; }
+    .side-containers h5:hover { color: var(--soft-orange); }
+    .side-containers p { color: var(--grayish-blue); font-size: 0.9rem; line-height: 1.6; }
+    hr { border: 0; border-top: 1px solid var(--dark-grayish-blue); }
+
+    /* 5. Footer Blog */
+    .footer-blog {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .card-img img {
+      width: 100px;
+      height: 130px;
+      object-fit: cover;
+    }
+
+    .card-heading-para span {
+      color: var(--soft-red);
+      font-size: 2rem;
+      font-weight: 700;
+      display: block;
+    }
+
+    .card-heading-para h1 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin: 0.4rem 0;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .card-heading-para h1:hover { color: var(--soft-red); }
+
+    .card-heading-para p {
+      color: var(--dark-grayish-blue);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* 6. Mobile Responsiveness */
+    @media (max-width: 850px) {
+      .menu-toggle { display: block; }
+      
+      nav {
+        position: fixed;
+        top: 0;
+        right: -100%; /* Initially hidden */
+        width: 70%;
+        height: 100vh;
+        background-color: var(--off-white);
+        z-index: 1000;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        transition: right 0.3s ease-in-out;
+      }
+
+      nav.active { right: 0; }
+      .menu-close { display: block; }
+
+      nav ul {
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      nav ul li {
+        font-size: 1.1rem;
+        color: var(--very-dark-blue);
+      }
+
+      .hero, .hero-heading-para, .footer-blog {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-main { grid-column: span 1; }
+
+      .card { margin-bottom: 1rem; }
+    }
+
+    .attribution { margin-top: 4rem; text-align: center; font-size: 11px; padding: 2rem 0; }
+  </style>
+</head>
+
+<body>
+  <div class="overlay" id="overlay"></div>
+
+  <main>
+    <header>
+      <img src="./assets/images/logo.svg" alt="logo">
+
+      <button class="menu-toggle" aria-label="Open Menu" id="open-menu">
+        <img src="./assets/images/icon-menu.svg" alt="Open Menu">
+      </button>
+
+      <nav id="navbar">
+        <button class="menu-close" aria-label="Close Menu" id="close-menu">
+          <img src="./assets/images/icon-menu-close.svg" alt="Close Menu">
+        </button>
+        <ul>
+          <li>Home</li>
+          <li>New</li>
+          <li>Popular</li>
+          <li>Trending</li>
+          <li>Categories</li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <section class="hero-main">
+        <div class="img-hero">
+          <img src="./assets/images/image-web-3-desktop.jpg" alt="img-hero">
+        </div>
+        <div class="hero-heading-para">
+          <div class="hero-heading">
+            <strong>The Bright Future of Web 3.0?</strong>
+          </div>
+          <div class="hero-para">
+            <p>We dive into the next evolution of the web that claims to put the power of the platforms back into the hands of the people. But is it really fulfilling its promise?</p>
+            <button>Read more</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="hero-side">
+        <h1>New</h1>
+        <div class="side-containers">
+          <h5>Hydrogen VS Electric Cars</h5>
+          <p>Will hydrogen-fueled cars ever catch up to EVs?</p>
+        </div>
+        <hr>
+        <div class="side-containers">
+          <h5>The Downsides of AI Artistry</h5>
+          <p>What are the possible adverse effects of on-demand AI image generation?</p>
+        </div>
+        <hr>
+        <div class="side-containers">       
+          <h5>Is VC Funding Drying Up?</h5>
+          <p>Private funding by VC firms is down 50% YOY. We take a look at what that means.</p>  
+        </div>
+      </section>
+    </section>
+
+    <section class="footer-blog">
+      <div class="card">
+        <div class="card-img"><img src="./assets/images/image-retro-pcs.jpg" alt="retro-pcs"></div>
+        <div class="card-heading-para">
+          <span>01</span>
+          <h1>Reviving Retro PCs</h1>
+          <p>What happens when old PCs are given modern upgrades?</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img"><img src="./assets/images/image-top-laptops.jpg" alt="top-laptops"></div>
+        <div class="card-heading-para">
+          <span>02</span>
+          <h1>Top 10 Laptops of 2022</h1>
+          <p>Our best picks for various needs and budgets.</p>
+        </div>  
+      </div>
+
+      <div class="card">
+        <div class="card-img"><img src="./assets/images/image-gaming-growth.jpg" alt="gaming-growth"></div>
+        <div class="card-heading-para">
+          <span>03</span>
+          <h1>The Growth of Gaming</h1>
+          <p>How the pandemic has sparked fresh opportunities.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="attribution">
+    <a href="/index.html">Back to home page</a>.
+    Coded by <a href="#">Yashaswini mudragadda</a>.
+  </footer>
+
+  <script>
+    const openBtn = document.getElementById('open-menu');
+    const closeBtn = document.getElementById('close-menu');
+    const nav = document.getElementById('navbar');
+    const overlay = document.getElementById('overlay');
+
+    // Function to toggle menu
+    function toggleMenu() {
+      nav.classList.toggle('active');
+      overlay.classList.toggle('active');
+      
+      // Prevent scrolling when menu is open
+      if(nav.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    openBtn.addEventListener('click', toggleMenu);
+    closeBtn.addEventListener('click', toggleMenu);
+    overlay.addEventListener('click', toggleMenu);
+  </script>
+</body>
+</html>
